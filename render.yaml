@@ -1,46 +1,29 @@
 # render.yaml — Render Infrastructure-as-Code
 # Docs: https://render.com/docs/blueprint-spec
 #
-# Deploys the Global Battery Waste Tracker as a Render Static Site.
+# Deploys as a Web Service using `serve` to host the Vite dist/ folder.
 # Every push to `main` triggers an automatic rebuild and redeploy.
 
 services:
   - type: web
     name: global-battery-waste-tracker
-    runtime: static
+    runtime: node
+    region: singapore   # closest to India — change if needed
 
     # ── Source ──────────────────────────────────────────────────────────────
     repo: https://github.com/sujithr-z/GLOBAL-BATTERY-WASTE-TRACKER
     branch: main
 
-    # ── Build ───────────────────────────────────────────────────────────────
+    # ── Build & Start ───────────────────────────────────────────────────────
     buildCommand: npm ci && npm run build
-    staticPublishPath: ./dist
+    startCommand: npm start          # runs: serve -s dist -l $PORT
 
-    # ── SPA routing ─────────────────────────────────────────────────────────
-    # Serve index.html for all routes so React handles client-side navigation
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
+    # ── Instance ────────────────────────────────────────────────────────────
+    plan: free                       # free tier (512 MB RAM, shared CPU)
 
-    # ── Headers ─────────────────────────────────────────────────────────────
-    headers:
-      # Cache static assets (hashed filenames) for 1 year
-      - path: /assets/*
-        name: Cache-Control
-        value: public, max-age=31536000, immutable
-      # Never cache index.html so updates deploy instantly
-      - path: /index.html
-        name: Cache-Control
-        value: no-cache, no-store, must-revalidate
-      # Security headers
-      - path: /*
-        name: X-Content-Type-Options
-        value: nosniff
-      - path: /*
-        name: X-Frame-Options
-        value: SAMEORIGIN
-      - path: /*
-        name: Referrer-Policy
-        value: strict-origin-when-cross-origin
+    # ── Environment ─────────────────────────────────────────────────────────
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: 20.11.0

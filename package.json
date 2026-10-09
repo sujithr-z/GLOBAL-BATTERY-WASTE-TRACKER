@@ -7,14 +7,17 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "serve -s dist -l $PORT"
   },
+
   "dependencies": {
     "lucide-react": "^1.54.0",
     "maplibre-gl": "^6.13.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "recharts": "^3.10.1"
+    "recharts": "^3.10.1",
+    "serve": "^14.2.6"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
