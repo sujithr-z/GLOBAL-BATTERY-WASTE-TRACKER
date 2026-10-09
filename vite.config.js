@@ -4,9 +4,10 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // GitHub Pages serves from /GLOBAL-BATTERY-WASTE-TRACKER/ — set base so
-  // all asset paths (JS, CSS, worker, map tiles) resolve correctly.
-  // Locally (npm run dev) this has no effect.
-  base: '/GLOBAL-BATTERY-WASTE-TRACKER/',
+  // Custom domain (batterywaste.org) serves from root — base must be '/'
+  // If you remove the custom domain and go back to github.io, change this to:
+  // base: '/GLOBAL-BATTERY-WASTE-TRACKER/'
+  base: '/',
+
 })
 
