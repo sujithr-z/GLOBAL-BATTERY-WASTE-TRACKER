@@ -1,0 +1,46 @@
+# render.yaml — Render Infrastructure-as-Code
+# Docs: https://render.com/docs/blueprint-spec
+#
+# Deploys the Global Battery Waste Tracker as a Render Static Site.
+# Every push to `main` triggers an automatic rebuild and redeploy.
+
+services:
+  - type: web
+    name: global-battery-waste-tracker
+    runtime: static
+
+    # ── Source ──────────────────────────────────────────────────────────────
+    repo: https://github.com/sujithr-z/GLOBAL-BATTERY-WASTE-TRACKER
+    branch: main
+
+    # ── Build ───────────────────────────────────────────────────────────────
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+
+    # ── SPA routing ─────────────────────────────────────────────────────────
+    # Serve index.html for all routes so React handles client-side navigation
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    # ── Headers ─────────────────────────────────────────────────────────────
+    headers:
+      # Cache static assets (hashed filenames) for 1 year
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      # Never cache index.html so updates deploy instantly
+      - path: /index.html
+        name: Cache-Control
+        value: no-cache, no-store, must-revalidate
+      # Security headers
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin

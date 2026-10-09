@@ -1,0 +1,5 @@
+/* public/_redirects
+   Render static site SPA fallback — all routes serve index.html.
+   This lets the React app handle its own client-side navigation.
+*/
+/*  /index.html  200
